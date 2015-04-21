@@ -155,7 +155,9 @@
 .leaflet-zoom-anim .leaflet-zoom-hide {
 	visibility: hidden;
 	}
-
+.leaflet-zoom-animated{
+    border: 1px solid red;
+}
 
 /* cursors */
 
