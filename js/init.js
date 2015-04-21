@@ -52,10 +52,10 @@ L.DomUtil.getTranslateString = function (point, el) {
 
     switch (true){
         case svg:
-            console.log(svgLimit(point.x,point.y, _rotate).dy)  ;
+            console.log(d.dx + " " + d.dy)  ;
            // return open + point.x + 'px, ' + point.y + 'px' + close;
 
-           return open + (point.y - d.dy) + 'px, ' + ((-point.x)- d.dy/2) + 'px' + close;
+           return open + (point.y - d.dy) + 'px, ' + ((-point.x) - d.dx) + 'px' + close;
 
 
             //return open + point.x + 'px, ' + (point.y - svgLimit(point.x,point.y, _rotate).dx ) + 'px' + close;
@@ -111,7 +111,7 @@ L.Map.include({
         root.setAttribute('width', width);
         root.setAttribute('height', height);
         //root.setAttribute('viewBox', [min.y- d.dy,  ((-min.x)-d.dx) , width, height].join(' '));
-        root.setAttribute('viewBox', [min.y - d.dy,  ((-min.x)- d.dy/2) , width, height].join(' '));
+        root.setAttribute('viewBox', [min.y - d.dy,  ((-min.x)- d.dx) , width, height].join(' '));
 
         if (L.Browser.mobileWebkit) {
             pane.appendChild(root);
