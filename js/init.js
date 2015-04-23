@@ -29,6 +29,14 @@ function toDegree(ar){
 function toRad(ad){
     return  ((ad * Math.PI) / 180);
 }
+function ofs(_x, _y){
+
+    return {
+        x: _x*Math.cos(toRad(degreeMap)) + _y*Math.sin(toRad(degreeMap)) ,
+        y: _y*Math.cos(toRad(degreeMap)) - _x*Math.sin(toRad(degreeMap)) - 270*Math.sin(toRad(degreeMap))
+    }
+
+}
 
 L.DomUtil.getTranslateString = function (point, el) {
     // on WebKit browsers (Chrome/Safari/iOS Safari/Android) using translate3d instead of translate
@@ -49,26 +57,19 @@ L.DomUtil.getTranslateString = function (point, el) {
        // console.log(el)
     }
 
-
+    var _ofs = ofs(point.x, point.y);
     switch (true){
         case svg:
-            console.log(d.dx + " " + d.dy)  ;
-           // return open + point.x + 'px, ' + point.y + 'px' + close;
-
-           return open + (point.y - d.dy) + 'px, ' + ((-point.x) - d.dx) + 'px' + close;
-
-
-            //return open + point.x + 'px, ' + (point.y - svgLimit(point.x,point.y, _rotate).dx ) + 'px' + close;
-
-
+            //return open + point.x + 'px, ' + point.y + 'px' + close;
+          //  return open + point.y + 'px, ' + (-point.x) + 'px' + close;
+            return open + _ofs.x + 'px, ' + _ofs.y + 'px' + close;
             break;
         default :
           //  console.log(el)
             return open + (point.x+ d.dx) + 'px,' + (point.y - d.dy) + 'px' + close + " rotate("+_rotate+"deg)";
 
     }
-
-}
+};
 
 
 L.DomUtil.setPosition = function (el, point, disable3D) { // (HTMLElement, Point[, Boolean])
@@ -95,10 +96,10 @@ L.Map.include({
         this._updatePathViewport();
 
         var vp = this._pathViewport,
-            min = vp.min,
+            point = vp.min,
             max = vp.max,
-            width = max.x - min.x,
-            height = max.y - min.y,
+            width = max.x - point.x,
+            height = max.y - point.y,
             root = this._pathRoot,
             pane = this._panes.overlayPane;
 
@@ -106,12 +107,13 @@ L.Map.include({
         if (L.Browser.mobileWebkit) {
             pane.removeChild(root);
         }
-
-        L.DomUtil.setPosition(root, min);
+        var _ofs = ofs(point.x, point.y);
+        L.DomUtil.setPosition(root, point);
         root.setAttribute('width', width);
         root.setAttribute('height', height);
-        //root.setAttribute('viewBox', [min.y- d.dy,  ((-min.x)-d.dx) , width, height].join(' '));
-        root.setAttribute('viewBox', [min.y - d.dy,  ((-min.x)- d.dx) , width, height].join(' '));
+       // root.setAttribute('viewBox', [point.x, point.y, width, height].join(' '));
+       // root.setAttribute('viewBox', [point.y, -point.x, width, height].join(' '));
+        root.setAttribute('viewBox', [_ofs.x, _ofs.y, width, height].join(' '));
 
         if (L.Browser.mobileWebkit) {
             pane.appendChild(root);
